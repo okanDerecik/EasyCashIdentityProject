@@ -15,21 +15,15 @@
             @await Component.InvokeAsync("_CustomerLayoutSidebarPartial")
             @await Component.InvokeAsync("_CustomerLayoutNavbarPartial")
 
-            
-            <div class="right_col" role="main">
-                <div class="">
-                    <div class="page-title">
-                        <div class="title_left">
-                            <div role="main">
-                                <h2>@RenderBody()</h2>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
+            <div class="" role="main">
+
+                @RenderBody()
+
             </div>
 
             @await Component.InvokeAsync("_CustomerLayoutFooterPartial")
-          
+
         </div>
     </div>
     @await Component.InvokeAsync("_CustomerLayoutScriptPartial")
