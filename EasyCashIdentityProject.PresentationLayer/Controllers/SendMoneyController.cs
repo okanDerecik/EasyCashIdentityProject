@@ -18,8 +18,9 @@ namespace EasyCashIdentityProject.PresentationLayer.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Index(string mycurrency)
         {
+            ViewBag.currency = mycurrency;
             return View();
         }
 
@@ -31,14 +32,21 @@ namespace EasyCashIdentityProject.PresentationLayer.Controllers
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             var receiverAccountNumberID = context.CustomerAccounts.Where(x => x.CustomerAccountNumber == sendMoneyForCustomerAccountProcessDto.ReceiverAccountNumber).Select(y => y.CustomerAccountID).FirstOrDefault();
 
-            sendMoneyForCustomerAccountProcessDto.SenderID = user.Id;
-            sendMoneyForCustomerAccountProcessDto.ProcessDate =Convert.ToDateTime(DateTime.Now.ToShortDateString());
-            sendMoneyForCustomerAccountProcessDto.ProcessType = "Havale";
-            sendMoneyForCustomerAccountProcessDto.ReceiverID = receiverAccountNumberID;
+            var senderAccountNumberID = context.CustomerAccounts.Where(x => x.AppUSerID == user.Id).Where(y => y.CustomerAccountCurrency == "Türk Lirası").Select(z => z.CustomerAccountID).FirstOrDefault();
 
-            //_customerAccountProcessService.TInsert();
+            var values = new CustomerAccountProcess();
+            values.ProcessDate = Convert.ToDateTime(DateTime.Now.ToShortDateString());
+            values.SenderID = senderAccountNumberID;
+            values.ProcessType = "Havale";
+            values.ReceiverID = receiverAccountNumberID;
+            values.Ammount = sendMoneyForCustomerAccountProcessDto.Ammount;
+            values.Description = sendMoneyForCustomerAccountProcessDto.Description;
+
+            _customerAccountProcessService.TInsert(values);
 
             return RedirectToAction("Index","Deneme");
         }
+
+
     }
 }
